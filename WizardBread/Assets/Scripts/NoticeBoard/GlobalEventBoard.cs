@@ -95,12 +95,24 @@ public class GlobalEventBoard : MonoBehaviour
         }
     }
 
-    public void AddEvent(Events.Event _event, object _data = null)
+    public void AddDelayEvent(Events.Event _event, object _data = null)
     {
         EventQueue queue = new EventQueue();
         queue.m_eventType = _event;
         queue.m_data = _data;
         m_tempBuffer.Add(queue);
+    }
+
+    public void AddRapidEvent(Events.Event _event, object _data = null)
+    {
+        if (m_eventList[(int)_event].m_eventTrigger != null && _data == null)
+        {
+            m_eventList[(int)_event].m_eventTrigger();
+        }
+        else if (m_eventList[(int)_event].m_eventTrigger != null && _data != null)
+        {
+            m_eventList[(int)_event].m_eventTrigger(_data);
+        }
     }
 
     /// <summary>Adds function that requires a data object to call list when this event is triggered</summary>
