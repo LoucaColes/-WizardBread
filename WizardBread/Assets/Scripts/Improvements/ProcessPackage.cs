@@ -3,13 +3,13 @@
 [Serializable]
 public class ProcessPackage
 {
-    public Simulator.ImproveTags Tag;
+    public Town.ImprovementTags Tag;
     public int Level;
     public ImprovementSim.ImprovementProcess Process;
     public int OtherLevel;
     public ImprovementSim.ImprovementProcess OtherProcess;
 
-    public ProcessPackage(Simulator.ImproveTags _tag, int _level, ImprovementSim.ImprovementProcess _process, int _otherLevel, ImprovementSim.ImprovementProcess _otherProcess)
+    public ProcessPackage(Town.ImprovementTags _tag, int _level, ImprovementSim.ImprovementProcess _process, int _otherLevel, ImprovementSim.ImprovementProcess _otherProcess)
     {
         Tag = _tag;
         Level = _level;

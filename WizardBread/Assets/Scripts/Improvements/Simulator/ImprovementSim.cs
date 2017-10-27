@@ -17,10 +17,24 @@ public class ImprovementSim : MonoBehaviour
         LessOrEquals
     }
 
-    public Simulator.ImproveTags m_tag;
+    [Serializable]
+    public class StatChange
+    {
+        public int Population;
+        public int Esteem;
+
+        public StatChange(int _population, int _esteem)
+        {
+            Population = _population;
+            Esteem = _esteem;
+        }
+    }
+
+    public Town.ImprovementTags m_tag;
     public int m_level = 1;
     public int m_maxLevel = 5;
     public List<ProcessPackage> m_data = new List<ProcessPackage>();
+    public List<StatChange> m_statChanges = new List<StatChange>();
     public List<bool> m_flags = new List<bool>();
 
     private string m_filePath;
@@ -31,9 +45,34 @@ public class ImprovementSim : MonoBehaviour
     {
         m_save = false;
         LoadData();
+
+        int count = m_statChanges.Count - 1;
+        while (m_statChanges.Count < m_maxLevel)
+        {
+            if (m_statChanges.Count != 0)
+            {
+                m_statChanges.Add(new StatChange(m_statChanges[count].Population, m_statChanges[count].Esteem));
+            }
+            else
+            {
+                count = 0;
+                m_statChanges.Add(new StatChange(1, 1));
+            }
+        }
+
     }
-	
-	void Update ()
+
+    public void Initialise()
+    {
+        m_level = 1;
+        m_flags.Clear();
+        foreach (ProcessPackage pack in m_data)
+        {
+            m_flags.Add(false);
+        }
+    }
+
+    void Update ()
     {
 		if(m_save)
         {
@@ -60,7 +99,7 @@ public class ImprovementSim : MonoBehaviour
         File.CreateText(m_filePath).Dispose();
 
         StreamWriter writer = new StreamWriter(m_filePath, true);
-        string Json = JsonUtility.ToJson(new ImproveData(m_maxLevel, m_data));
+        string Json = JsonUtility.ToJson(new ImproveSimData(m_data));
         writer.WriteLine(Json);
         writer.Close();
         AssetDatabase.ImportAsset(m_filePath);
@@ -73,12 +112,15 @@ public class ImprovementSim : MonoBehaviour
         if (File.Exists(m_filePath))
         {
             StreamReader reader = new StreamReader(m_filePath);
-            ImproveData data = JsonUtility.FromJson<ImproveData>(reader.ReadLine());
+            ImproveSimData data = JsonUtility.FromJson<ImproveSimData>(reader.ReadLine());
             reader.Close();
 
             m_data.Clear();
             m_data = data.Data;
-            m_maxLevel = m_data.Count;
+            if (m_data.Count < m_maxLevel)
+            {
+                m_maxLevel = m_data.Count;
+            }
 
             m_flags.Clear();
             foreach(ProcessPackage pack in m_data)
@@ -92,21 +134,21 @@ public class ImprovementSim : MonoBehaviour
     {
         ChangePackage packOut = null;
 
-        for(int iter = 0; iter <= m_data.Count - 1; iter++)
+        for (int iter = 0; iter <= m_data.Count - 1; iter++)
         {
-            if(!m_flags[iter] && m_data[iter].Tag == _packIn.Tag)
+            if (!m_flags[iter] && m_data[iter].Tag == _packIn.Tag)
             {
                 m_flags[iter] = m_data[iter].ResolveScenario(m_level, _packIn.Level);
 
-                if(m_flags[iter])
+                if (m_flags[iter])
                 {
                     Upgrade();
-                    packOut = new ChangePackage(m_tag, m_level);
+                    packOut = new ChangePackage(m_tag, m_level, m_statChanges[m_level - 1].Population, m_statChanges[m_level - 1].Esteem);
                 }
             }
         }
 
-        if(m_level == m_maxLevel)
+        if (m_level == m_maxLevel)
         {
             for (int iter = 0; iter <= m_flags.Count - 1; iter++)
             {
@@ -119,19 +161,20 @@ public class ImprovementSim : MonoBehaviour
 
     private void Upgrade()
     {
-        m_level++;
+        if (m_level != m_maxLevel)
+        {
+            m_level++;
+        }
     }
 }
 
 [Serializable]
-class ImproveData
+class ImproveSimData
 {
-    public int MaxLevel = 10;
     public List<ProcessPackage> Data = new List<ProcessPackage>();
 
-    public ImproveData(int _maxLevel, List<ProcessPackage> _data)
+    public ImproveSimData(List<ProcessPackage> _data)
     {
-        MaxLevel = _maxLevel;
         Data.AddRange(_data);
     }
 }

@@ -6,19 +6,12 @@ using UnityEditor;
 
 public class Simulator : MonoBehaviour
 {
-    public enum ImproveTags
+    public enum ScoreFactor
     {
-        FOOD,
-        ACCOMADATION,
-        WATER,
-        ENERGY,
-        TRANSPORT,
-        EDUCATION,
-        COMMERCE,
-        SERVICES,
-        RECREATION,
-        TOURIST,
-        Count
+        ImprovementLevel,
+        PopulationLevel,
+        EsteemLevel,
+        TotalEsteem
     }
 
     [Serializable]
@@ -51,33 +44,88 @@ public class Simulator : MonoBehaviour
     {
         public List<int> Order = new List<int>();
         public List<ImproveResult> Results = new List<ImproveResult>();
+        public int TotalEsteem = 0;
+        public int PopulationLevel = 1;
+        public int EsteemLevel = 1;
+        public float ImprovementGrade = 0.0f;
         public float Score = 0.0f;
 
-        public float CalculateScore()
+        public float CalculateScore(List<ScoreFactor> _factors, int _maxPopLevel, int _maxEsteemLevel)
         {
             Score = 0.0f;
-            foreach (ImproveResult item in Results)
+
+            foreach (ScoreFactor item in _factors)
             {
-                Score += item.CalculateScore();
+                FactorHandler(item, _maxPopLevel, _maxEsteemLevel);
             }
+
             return Score;
+        }
+
+        private void FactorHandler(ScoreFactor _factor, int _maxPopLevel, int _maxEsteemLevel)
+        {
+            switch (_factor)
+            {
+                case ScoreFactor.ImprovementLevel:
+                    {
+                        foreach (ImproveResult item in Results)
+                        {
+                            ImprovementGrade += item.CalculateScore();
+                        }
+                        Score += ImprovementGrade;
+                        break;
+                    }
+                case ScoreFactor.PopulationLevel:
+                    {
+                        Score += ((float)PopulationLevel / (float)_maxPopLevel) * 100.0f;
+                        break;
+                    }
+                case ScoreFactor.EsteemLevel:
+                    {
+                        Score += ((float)EsteemLevel / (float)_maxEsteemLevel) * 100.0f;
+                        break;
+                    }
+                case ScoreFactor.TotalEsteem:
+                    {
+                        Score += TotalEsteem;
+                        break;
+                    }
+                default:
+                    {
+                        return;
+                    }
+            }
         }
     }
 
     public bool m_start = false;
-    public int m_iteration = 0;
+    private int m_iteration = 0;
+
+    public List<Town.ImprovementTags> m_order = new List<Town.ImprovementTags>();
+    public List<ScoreFactor> m_scoreFactors = new List<ScoreFactor>();
+
+    public List<int> m_populationLevels = new List<int>();
+    private int m_population;
+
+    public List<int> m_esteemLevels = new List<int>();
+    private int m_esteemCoefficient;
+
     public int m_totalPermutations = 1;
-    public List<ImproveTags> m_order = new List<ImproveTags>();
     public List<DataSet> m_results = new List<DataSet>();
 
-    public List<ImprovementSim> m_improvementTemplates = new List<ImprovementSim>();
+    public List<ImprovementSim> m_allImprovements = new List<ImprovementSim>();
 
-    private List<ImprovementSim> m_activeSims = new List<ImprovementSim>();
+    private List<ImprovementSim> m_activeImprovements = new List<ImprovementSim>();
     private List<ChangePackage> m_changeBuffer = new List<ChangePackage>();
-
+    
     public bool m_save = false;
     public string m_name = "";
     private string m_filePath;
+
+    void OnDestroy()
+    {
+        m_results.Clear();
+    }
 
     void Update ()
     {
@@ -102,10 +150,13 @@ public class Simulator : MonoBehaviour
 
         while (!NextOrder())
         {
-            m_activeSims.Clear();
+            m_activeImprovements.Clear();
             m_results.Add(new DataSet());
 
-            foreach (ImproveTags tag in m_order)
+            m_population = m_populationLevels[0];
+            m_esteemCoefficient = m_esteemLevels[0];
+
+            foreach (Town.ImprovementTags tag in m_order)
             {
                 AddImprovement(tag);
                 m_results[m_results.Count - 1].Order.Add((int)tag);
@@ -116,16 +167,17 @@ public class Simulator : MonoBehaviour
                 }
             }
 
-            foreach(ImprovementSim item in m_activeSims)
+            foreach(ImprovementSim item in m_activeImprovements)
             {
                 m_results[m_results.Count - 1].Results.Add(new ImproveResult(item.m_tag.ToString(), item.m_level, item.m_maxLevel));
             }
 
-            m_results[m_results.Count - 1].CalculateScore();
-            CullResults();
+            m_results[m_results.Count - 1].TotalEsteem = m_population * m_esteemCoefficient;
+            m_results[m_results.Count - 1].CalculateScore(m_scoreFactors, m_populationLevels.Count, m_esteemLevels.Count);
             m_iteration++;
         }
-        m_activeSims.Clear();
+        CullResults();
+        m_activeImprovements.Clear();
         Reorder(m_results[0].Order);
     }
 
@@ -159,7 +211,7 @@ public class Simulator : MonoBehaviour
         m_order.Clear();
         foreach(int item in _newOrder)
         {
-            m_order.Add((ImproveTags)item);
+            m_order.Add((Town.ImprovementTags)item);
         }
     }
 
@@ -173,12 +225,17 @@ public class Simulator : MonoBehaviour
         }
     }
 
-    private void AddImprovement(ImproveTags _tag)
+    private void AddImprovement(Town.ImprovementTags _tag)
     {
-        m_changeBuffer.Add(new ChangePackage(_tag, 1));
+        ChangePackage temp = new ChangePackage(_tag, 1, m_allImprovements[(int)_tag].m_statChanges[0].Population,
+            m_allImprovements[(int)_tag].m_statChanges[0].Esteem);
+        AddPopulation(temp.Population);
+        AddEsteem(temp.Esteem);
+        m_changeBuffer.Add(temp);
         BufferHandler();
 
-        m_activeSims.Add(m_improvementTemplates[(int)_tag]);
+        m_activeImprovements.Add(m_allImprovements[(int)_tag]);
+        m_activeImprovements[m_activeImprovements.Count - 1].Initialise();
     }
 
     private void BufferHandler()
@@ -186,11 +243,13 @@ public class Simulator : MonoBehaviour
         List<ChangePackage> tempBuffer = new List<ChangePackage>();
         foreach (ChangePackage package in m_changeBuffer)
         {
-            foreach (ImprovementSim improv in m_activeSims)
+            foreach (ImprovementSim improv in m_activeImprovements)
             {
                 ChangePackage temp = improv.Resolve(package);
                 if(temp != null)
                 {
+                    AddPopulation(temp.Population);
+                    AddEsteem(temp.Esteem);
                     tempBuffer.Add(temp);
                 }
             }
@@ -201,6 +260,37 @@ public class Simulator : MonoBehaviour
         if(tempBuffer.Count != 0)
         {
             m_changeBuffer.AddRange(tempBuffer);
+        }
+    }
+
+    private void AddPopulation(int _newPop)
+    {
+        int newPop = m_population + _newPop;
+        if (newPop <= m_populationLevels[m_populationLevels.Count - 1])
+        {
+            m_population = newPop;
+            if (m_population >= m_populationLevels[m_results[m_results.Count - 1].PopulationLevel])
+            {
+                m_results[m_results.Count - 1].PopulationLevel++;
+            }
+        }
+        else if (m_population != m_populationLevels[m_populationLevels.Count - 1])
+        {
+            m_population = m_populationLevels[m_populationLevels.Count - 1];
+            m_results[m_results.Count - 1].PopulationLevel = m_populationLevels.Count;
+        }
+    }
+
+    private void AddEsteem(int _newCoefficient)
+    {
+        m_esteemCoefficient += _newCoefficient;
+        m_results[m_results.Count - 1].TotalEsteem = m_esteemCoefficient * m_population;
+        if (m_results[m_results.Count - 1].EsteemLevel != m_esteemLevels.Count)
+        {
+            if (m_results[m_results.Count - 1].TotalEsteem >= m_esteemLevels[m_results[m_results.Count - 1].EsteemLevel])
+            {
+                m_results[m_results.Count - 1].EsteemLevel++;
+            }
         }
     }
 
