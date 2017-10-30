@@ -163,9 +163,71 @@ public class Town : MonoBehaviour
         }
     }
 
-    public void InputIn()
+    public void InputIn(int _id)
     {
-
+        switch (_id)
+        {
+            case 0:
+                {
+                    m_buttonsActivated[0] = true;
+                    BeginRound(ImprovementTags.WATER);
+                    break;
+                }
+            case 1:
+                {
+                    m_buttonsActivated[1] = true;
+                    BeginRound(ImprovementTags.ENERGY);
+                    break;
+                }
+            case 2:
+                {
+                    m_buttonsActivated[2] = true;
+                    BeginRound(ImprovementTags.ACCOMADATION);
+                    break;
+                }
+            case 3:
+                {
+                    m_buttonsActivated[3] = true;
+                    BeginRound(ImprovementTags.RECREATION);
+                    break;
+                }
+            case 4:
+                {
+                    m_buttonsActivated[4] = true;
+                    BeginRound(ImprovementTags.TRANSPORT);
+                    break;
+                }
+            case 5:
+                {
+                    m_buttonsActivated[5] = true;
+                    BeginRound(ImprovementTags.EDUCATION);
+                    break;
+                }
+            case 6:
+                {
+                    m_buttonsActivated[6] = true;
+                    BeginRound(ImprovementTags.FOOD);
+                    break;
+                }
+            case 7:
+                {
+                    m_buttonsActivated[7] = true;
+                    BeginRound(ImprovementTags.SERVICES);
+                    break;
+                }
+            case 8:
+                {
+                    m_buttonsActivated[8] = true;
+                    BeginRound(ImprovementTags.COMMERCE);
+                    break;
+                }
+            default:
+                {
+                    m_buttonsActivated[0] = true;
+                    BeginRound(ImprovementTags.TOURIST);
+                    break;
+                }
+        }
     }
 
     private void BeginRound(ImprovementTags _tag)
@@ -217,6 +279,7 @@ public class Town : MonoBehaviour
                 while (m_changeBuffer.Count != 0)
                 {
                     BufferHandler();
+                    UpdateImprovements();
                 }
             }
             m_complete = true;
