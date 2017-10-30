@@ -42,8 +42,6 @@ public class Improvement : MonoBehaviour
     public bool m_save = false;
     public bool m_load = false;
 
-    private SpriteRenderer m_renderer;
-
     void Start()
     {
         LoadData();
@@ -67,7 +65,7 @@ public class Improvement : MonoBehaviour
             m_visualLevels.Add(new Sprite());
         }
 
-        m_renderer = GetComponent<SpriteRenderer>();
+        //m_renderer = GetComponent<SpriteRenderer>();
     }
 
     public void Clear()
@@ -78,13 +76,13 @@ public class Improvement : MonoBehaviour
         {
             m_flags.Add(false);
         }
-        m_renderer.sprite = m_visualLevels[0];
-        m_renderer.enabled = false;
+        //m_renderer.sprite = m_visualLevels[0];
+        //m_renderer.enabled = false;
     }
 
     public void Initialise()
     {
-        m_renderer.enabled = true;
+        //m_renderer.enabled = true;
     }
 
     void Update()
@@ -179,7 +177,7 @@ public class Improvement : MonoBehaviour
         {
             if (m_visualLevels[m_level])
             {
-                m_renderer.sprite = m_visualLevels[m_level];
+                //m_renderer.sprite = m_visualLevels[m_level];
             }
             m_level++;
         }

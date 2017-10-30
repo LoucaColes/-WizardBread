@@ -165,67 +165,75 @@ public class Town : MonoBehaviour
         }
     }
 
-    public void InputIn(int _id)
+    public void InputIn(int _id, Improvement _improv)
     {
         switch (_id)
         {
             case 0:
                 {
                     m_buttonsActivated[0] = true;
+                    m_allImprovements[(int)ImprovementTags.WATER] = _improv;
                     BeginRound(ImprovementTags.WATER);
                     break;
                 }
             case 1:
                 {
                     m_buttonsActivated[1] = true;
+                    m_allImprovements[(int)ImprovementTags.ENERGY] = _improv;
                     BeginRound(ImprovementTags.ENERGY);
                     break;
                 }
             case 2:
                 {
                     m_buttonsActivated[2] = true;
+                    m_allImprovements[(int)ImprovementTags.ACCOMADATION] = _improv;
                     BeginRound(ImprovementTags.ACCOMADATION);
                     break;
                 }
             case 3:
                 {
                     m_buttonsActivated[3] = true;
+                    m_allImprovements[(int)ImprovementTags.RECREATION] = _improv;
                     BeginRound(ImprovementTags.RECREATION);
                     break;
                 }
             case 4:
                 {
                     m_buttonsActivated[4] = true;
+                    m_allImprovements[(int)ImprovementTags.TRANSPORT] = _improv;
                     BeginRound(ImprovementTags.TRANSPORT);
                     break;
                 }
             case 5:
                 {
                     m_buttonsActivated[5] = true;
+                    m_allImprovements[(int)ImprovementTags.EDUCATION] = _improv;
                     BeginRound(ImprovementTags.EDUCATION);
                     break;
                 }
             case 6:
                 {
                     m_buttonsActivated[6] = true;
+                    m_allImprovements[(int)ImprovementTags.FOOD] = _improv;
                     BeginRound(ImprovementTags.FOOD);
                     break;
                 }
             case 7:
                 {
                     m_buttonsActivated[7] = true;
+                    m_allImprovements[(int)ImprovementTags.SERVICES] = _improv;
                     BeginRound(ImprovementTags.SERVICES);
                     break;
                 }
             case 8:
                 {
                     m_buttonsActivated[8] = true;
+                    m_allImprovements[(int)ImprovementTags.COMMERCE] = _improv;
                     BeginRound(ImprovementTags.COMMERCE);
                     break;
                 }
             default:
-                {
-                    
+                {                    
                     break;
                 }
         }
