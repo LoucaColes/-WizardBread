@@ -10,6 +10,8 @@ public class Chosen : MonoBehaviour {
     public int ID_Number;
 
     private GameObject m_improvementsParent;
+
+    private bool buttonActive = true;
     
 
 
@@ -25,14 +27,17 @@ public class Chosen : MonoBehaviour {
        
     public void OnMouseDown()
     {
-        GetComponent<SpriteRenderer>().sprite = whiteblock;
-        Debug.Log(name + " pressed");
-        
+        if (buttonActive == true)
+        {
+            buttonActive = false;
+            GetComponent<SpriteRenderer>().sprite = whiteblock;
+            Debug.Log(name + " pressed");
 
-        GameObject newTownObject = Instantiate(townObject) as GameObject;
-       // _anim = newTownObject.FindComponentOfType<Animation>();
-        newTownObject.transform.parent = m_improvementsParent.transform;
-        newTownObject.transform.position = townObject.transform.position;
 
+            GameObject newTownObject = Instantiate(townObject) as GameObject;
+            // _anim = newTownObject.FindComponentOfType<Animation>();
+            newTownObject.transform.parent = m_improvementsParent.transform;
+            newTownObject.transform.position = townObject.transform.position;
+        }
     }
 }
