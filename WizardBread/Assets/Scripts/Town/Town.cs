@@ -110,50 +110,57 @@ public class Town : MonoBehaviour
         if(!m_complete && !m_upgrading)
         {
             //Add Input
-            if(!m_buttonsActivated[0] && Input.GetKeyDown(KeyCode.Alpha1))
+            if(Input.GetKeyDown(KeyCode.Alpha1))
             {
-                m_buttonsActivated[0] = true;
-                BeginRound(ImprovementTags.FOOD);
+                ButtonPress(0);
             }
-            else if (!m_buttonsActivated[1] && Input.GetKeyDown(KeyCode.Alpha2))
+            else if (Input.GetKeyDown(KeyCode.Alpha2))
             {
-                m_buttonsActivated[1] = true;
-                BeginRound(ImprovementTags.ACCOMADATION);
+                ButtonPress(1);
             }
-            else if (!m_buttonsActivated[2] && Input.GetKeyDown(KeyCode.Alpha3))
+            else if (Input.GetKeyDown(KeyCode.Alpha3))
             {
-                m_buttonsActivated[2] = true;
-                BeginRound(ImprovementTags.WATER);
+                ButtonPress(2);
             }
-            else if (!m_buttonsActivated[3] && Input.GetKeyDown(KeyCode.Alpha4))
+            else if (Input.GetKeyDown(KeyCode.Alpha4))
             {
-                m_buttonsActivated[3] = true;
-                BeginRound(ImprovementTags.ENERGY);
+                ButtonPress(3);
             }
-            else if (!m_buttonsActivated[4] && Input.GetKeyDown(KeyCode.Alpha5))
+            else if (Input.GetKeyDown(KeyCode.Alpha5))
             {
-                m_buttonsActivated[4] = true;
-                BeginRound(ImprovementTags.TRANSPORT);
+                ButtonPress(4);
             }
-            else if (!m_buttonsActivated[5] && Input.GetKeyDown(KeyCode.Alpha6))
+            else if (Input.GetKeyDown(KeyCode.Alpha6))
             {
-                m_buttonsActivated[5] = true;
-                BeginRound(ImprovementTags.EDUCATION);
+                ButtonPress(5);
             }
-            else if (!m_buttonsActivated[6] && Input.GetKeyDown(KeyCode.Alpha7))
+            else if (Input.GetKeyDown(KeyCode.Alpha7))
             {
-                m_buttonsActivated[6] = true;
-                BeginRound(ImprovementTags.COMMERCE);
+                ButtonPress(6);
             }
-            else if (!m_buttonsActivated[7] && Input.GetKeyDown(KeyCode.Alpha8))
+            else if (Input.GetKeyDown(KeyCode.Alpha8))
             {
-                m_buttonsActivated[7] = true;
-                BeginRound(ImprovementTags.SERVICES);
+                ButtonPress(7);
             }
-            else if (!m_buttonsActivated[8] && Input.GetKeyDown(KeyCode.Alpha9))
+            else if (Input.GetKeyDown(KeyCode.Alpha9))
             {
-                m_buttonsActivated[8] = true;
-                BeginRound(ImprovementTags.RECREATION);
+                ButtonPress(8);
+            }
+            else if (Input.GetKeyDown(KeyCode.Alpha0))
+            {
+                ButtonPress(9);
+            }
+        }
+    }
+
+    private void ButtonPress(int _index)
+    {
+        if (_index < m_numButtons)
+        {
+            if (!m_buttonsActivated[_index])
+            {
+                m_buttonsActivated[_index] = true;
+                BeginRound((ImprovementTags)_index);
             }
         }
     }
