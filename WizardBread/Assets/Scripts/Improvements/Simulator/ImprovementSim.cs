@@ -117,9 +117,9 @@ public class ImprovementSim : MonoBehaviour
 
             m_data.Clear();
             m_data = data.Data;
-            if (m_data.Count < m_maxLevel)
+            if (m_data.Count + 1 < m_maxLevel)
             {
-                m_maxLevel = m_data.Count;
+                m_maxLevel = m_data.Count + 1;
             }
 
             m_flags.Clear();
