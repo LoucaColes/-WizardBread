@@ -84,7 +84,7 @@ public class Improvement : MonoBehaviour
 
     public void Initialise()
     {
-        m_renderer.enabled = true;
+        m_renderer.enabled = false;
     }
 
     void Update()

@@ -38,6 +38,7 @@ public class Chosen : MonoBehaviour {
             // _anim = newTownObject.FindComponentOfType<Animation>();
             newTownObject.transform.parent = m_improvementsParent.transform;
             newTownObject.transform.position = townObject.transform.position;
+            Town.m_instance.InputIn(ID_Number);
         }
     }
 }

@@ -155,11 +155,6 @@ public class Town : MonoBehaviour
                 m_buttonsActivated[8] = true;
                 BeginRound(ImprovementTags.RECREATION);
             }
-            else if (!m_buttonsActivated[9] && Input.GetKeyDown(KeyCode.Alpha0))
-            {
-                m_buttonsActivated[9] = true;
-                BeginRound(ImprovementTags.TOURIST);
-            }
         }
     }
 
@@ -223,8 +218,7 @@ public class Town : MonoBehaviour
                 }
             default:
                 {
-                    m_buttonsActivated[0] = true;
-                    BeginRound(ImprovementTags.TOURIST);
+                    
                     break;
                 }
         }
