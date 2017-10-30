@@ -49,7 +49,7 @@ public class Improvement : MonoBehaviour
         int count = m_statChanges.Count - 1;
         while (m_statChanges.Count < m_maxLevel)
         {
-            if(m_statChanges.Count != 0)
+            if (m_statChanges.Count != 0)
             {
                 m_statChanges.Add(new StatChange(m_statChanges[count].Population, m_statChanges[count].Esteem));
             }
