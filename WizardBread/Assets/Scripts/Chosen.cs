@@ -25,23 +25,21 @@ public class Chosen : MonoBehaviour {
         {
             m_improvementsParent = new GameObject("Improvements");
         }
-        transform.GetChild(0).gameObject.SetActive(false);
-
     }
 
     public void OnMouseDown()
     {
-        if (buttonActive == true)
+        if (Town.m_instance.m_state == Town.State.Waiting)
         {
-            buttonActive = false;
-            GetComponent<SpriteRenderer>().sprite = whiteblock;
+            if (buttonActive == true)
+            {
+                buttonActive = false;
+                GetComponent<SpriteRenderer>().sprite = null;
 
-            transform.GetChild(0).gameObject.SetActive(true);
-
-            GameObject newTownObject = Instantiate(townObject) as GameObject;
-            endLocation = newTownObject.transform.position;
-            newTownObject.transform.parent = m_improvementsParent.transform;
-            Town.m_instance.InputIn(ID_Number, newTownObject.GetComponent<Improvement>());
+                GameObject newTownObject = Instantiate(townObject) as GameObject;
+                newTownObject.transform.parent = m_improvementsParent.transform;
+                Town.m_instance.InputIn(ID_Number, newTownObject.GetComponent<Improvement>());
+            }
         }
     }
 }

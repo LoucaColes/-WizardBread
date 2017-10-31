@@ -171,6 +171,7 @@ public class Town : MonoBehaviour
             if(m_updateBuffer.Count == 0)
             {
                 m_state = State.Waiting;
+                m_complete = TownComplete();
             }
             else
             {
@@ -284,8 +285,8 @@ public class Town : MonoBehaviour
             BufferHandler();
         }
 
-        m_state = State.Simulating;
-        m_complete = TownComplete();
+        m_state = State.Pause;
+        m_currentWait = m_wait;
     }
 
     private void UpdateImprovement()
@@ -390,7 +391,7 @@ public class Town : MonoBehaviour
             }
         }
         else if(m_population != m_populationLevels[m_populationLevels.Count - 1])
-        {
+        { 
             m_population = m_populationLevels[m_populationLevels.Count - 1];
             m_populationLevel = m_populationLevels.Count;
         }

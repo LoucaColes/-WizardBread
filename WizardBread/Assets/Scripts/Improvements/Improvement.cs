@@ -48,7 +48,8 @@ public class Improvement : MonoBehaviour
     public bool m_load = false;
 
     private SpriteRenderer m_renderer;
-    public Animator m_animator;
+
+    private bool m_buildPlayed = false;
 
     private void Start()
     {
@@ -74,7 +75,6 @@ public class Improvement : MonoBehaviour
         }
 
         m_renderer = GetComponent<SpriteRenderer>();
-        m_animator = GetComponent<Animator>();
     }
 
     public void Clear()
@@ -85,11 +85,16 @@ public class Improvement : MonoBehaviour
         {
             m_flags.Add(false);
         }
-        //m_renderer.enabled = false;
     }
 
     public void Initialise()
     {
+        transform.GetChild(0).gameObject.SetActive(true);
+        if (!m_buildPlayed)
+        {
+            m_buildPlayed = true;
+            AudioManager.m_instance.PlaySFX("Build");
+        }
     }
 
     private void Update()
@@ -186,13 +191,15 @@ public class Improvement : MonoBehaviour
 
     public void Upgrade()
     {
-        //GetComponent<Animator>().enabled = false;
         if (m_level != m_maxLevel)
         {
             if (m_visualLevels[m_level])
             {
                 m_renderer.sprite = m_visualLevels[m_level];
             }
+
+            AudioManager.m_instance.PlaySFX("Ding");
+
             m_level++;
         }
     }
