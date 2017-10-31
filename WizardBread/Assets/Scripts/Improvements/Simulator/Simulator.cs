@@ -294,6 +294,8 @@ public class Simulator : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+
     private void SaveData()
     {
         if (m_name != "")
@@ -356,6 +358,8 @@ public class Simulator : MonoBehaviour
             Debug.Log("Results file needs name.");
         }
     }
+
+#endif
 }
 
 [Serializable]

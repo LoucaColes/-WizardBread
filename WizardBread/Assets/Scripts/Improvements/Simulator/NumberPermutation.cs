@@ -124,6 +124,8 @@ public class NumberPermutation : MonoBehaviour
         return permOut;
     }
 
+#if UNITY_EDITOR
+
     private void SaveData()
     {
         m_filePath = "Assets/Data/Sim/Permutations/Size-" + m_internalSeed.Count + ".txt";
@@ -145,6 +147,8 @@ public class NumberPermutation : MonoBehaviour
         writer.Close();
         AssetDatabase.ImportAsset(m_filePath);
     }
+
+#endif
 
     public static List<int> LoadData(int _length)
     {

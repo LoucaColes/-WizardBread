@@ -102,6 +102,8 @@ public class Improvement : MonoBehaviour
         }
     }
 
+#if UNITY_EDITOR
+
     private void SaveData()
     {
         m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
@@ -119,6 +121,8 @@ public class Improvement : MonoBehaviour
         writer.Close();
         AssetDatabase.ImportAsset(m_filePath);
     }
+
+#endif
 
     private void LoadData()
     {
