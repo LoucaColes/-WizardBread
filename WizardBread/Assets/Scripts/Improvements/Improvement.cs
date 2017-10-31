@@ -2,7 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+
 using UnityEditor;
+
+#endif
 
 public class Improvement : MonoBehaviour
 {
@@ -45,7 +50,7 @@ public class Improvement : MonoBehaviour
     private SpriteRenderer m_renderer;
     public Animator m_animator;
 
-    void Start()
+    private void Start()
     {
         LoadData();
 
@@ -87,12 +92,14 @@ public class Improvement : MonoBehaviour
     {
     }
 
-    void Update()
+    private void Update()
     {
         if (m_save)
         {
             m_save = false;
+#if UNITY_EDITOR
             SaveData();
+#endif
         }
 
         if (m_load)
@@ -192,7 +199,7 @@ public class Improvement : MonoBehaviour
 }
 
 [Serializable]
-class ImproveData
+internal class ImproveData
 {
     public List<ProcessPackage> Data = new List<ProcessPackage>();
 

@@ -2,7 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+
 using UnityEditor;
+
+#endif
 
 public class ImprovementSim : MonoBehaviour
 {
@@ -41,7 +46,7 @@ public class ImprovementSim : MonoBehaviour
     public bool m_save = false;
     public bool m_load = false;
 
-	void Start ()
+    private void Start()
     {
         m_save = false;
         LoadData();
@@ -59,7 +64,6 @@ public class ImprovementSim : MonoBehaviour
                 m_statChanges.Add(new StatChange(1, 1));
             }
         }
-
     }
 
     public void Initialise()
@@ -72,12 +76,14 @@ public class ImprovementSim : MonoBehaviour
         }
     }
 
-    void Update ()
+    private void Update()
     {
-		if(m_save)
+        if (m_save)
         {
             m_save = false;
-            SaveData();            
+#if UNITY_EDITOR
+            SaveData();
+#endif
         }
 
         if (m_load)
@@ -107,7 +113,9 @@ public class ImprovementSim : MonoBehaviour
 
         AssetDatabase.ImportAsset(m_filePath);
     }
+
 #endif
+
     private void LoadData()
     {
         m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
@@ -126,7 +134,7 @@ public class ImprovementSim : MonoBehaviour
             }
 
             m_flags.Clear();
-            foreach(ProcessPackage pack in m_data)
+            foreach (ProcessPackage pack in m_data)
             {
                 m_flags.Add(false);
             }
@@ -172,7 +180,7 @@ public class ImprovementSim : MonoBehaviour
 }
 
 [Serializable]
-class ImproveSimData
+internal class ImproveSimData
 {
     public List<ProcessPackage> Data = new List<ProcessPackage>();
 
