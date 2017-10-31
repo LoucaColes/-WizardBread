@@ -186,7 +186,7 @@ public class Improvement : MonoBehaviour
 
     public void Upgrade()
     {
-        GetComponent<Animator>().enabled = false;
+        //GetComponent<Animator>().enabled = false;
         if (m_level != m_maxLevel)
         {
             if (m_visualLevels[m_level])
