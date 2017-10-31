@@ -20,6 +20,13 @@ public class Town : MonoBehaviour
         Count
     }
 
+    public enum State
+    {
+        Waiting,
+        Simulating, 
+        Pause
+    }
+
     public static Town m_instance;
 
     public bool m_complete = false;
@@ -33,6 +40,8 @@ public class Town : MonoBehaviour
     public int m_esteemCoefficient;
     private int m_esteemLevel = 1;
     public List<int> m_esteemLevels = new List<int>();
+
+    public State m_state = State.Waiting;
 
     // Use this for initialization
     private void Start()
@@ -81,7 +90,7 @@ public class Town : MonoBehaviour
 
     private List<Improvement> m_activeImprovements = new List<Improvement>();
     private List<ChangePackage> m_changeBuffer = new List<ChangePackage>();
-    private List<ImprovementTags> m_updateBuffer = new List<ImprovementTags>();
+    public List<ImprovementTags> m_updateBuffer = new List<ImprovementTags>();
 
     public bool m_start = false;
     public bool m_reset = false;
@@ -90,65 +99,91 @@ public class Town : MonoBehaviour
     public List<bool> m_buttonsActivated = new List<bool>();
     public int m_numButtons = 10;
 
-    private bool m_upgrading = false;
+    public float m_wait = 1.0f;
+    private float m_currentWait = 1.0f;
 
     void Update()
     {
-        if (m_start)
+        if (m_state == State.Waiting)
         {
-            m_start = false;
-            ResetTown();
-            BeginSimulation();
-        }
+            if (m_start)
+            {
+                m_start = false;
+                ResetTown();
+                BeginSimulation();
+            }
 
-        if (m_reset)
-        {
-            m_reset = false;
-            ResetTown();
-        }
+            if (m_reset)
+            {
+                m_reset = false;
+                ResetTown();
+            }
 
-        if(!m_complete && !m_upgrading)
+            if (!m_complete)
+            {
+                //Add Input
+                if (Input.GetKeyDown(KeyCode.Alpha1))
+                {
+                    ButtonPress(0);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha2))
+                {
+                    ButtonPress(1);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha3))
+                {
+                    ButtonPress(2);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha4))
+                {
+                    ButtonPress(3);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha5))
+                {
+                    ButtonPress(4);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha6))
+                {
+                    ButtonPress(5);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha7))
+                {
+                    ButtonPress(6);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha8))
+                {
+                    ButtonPress(7);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha9))
+                {
+                    ButtonPress(8);
+                }
+                else if (Input.GetKeyDown(KeyCode.Alpha0))
+                {
+                    ButtonPress(9);
+                }
+            }
+        }
+        else if(m_state == State.Simulating)
         {
-            //Add Input
-            if(Input.GetKeyDown(KeyCode.Alpha1))
+            UpdateImprovement();
+
+            if(m_updateBuffer.Count == 0)
             {
-                ButtonPress(0);
+                m_state = State.Waiting;
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha2))
+            else
             {
-                ButtonPress(1);
+                m_state = State.Pause;
+                m_currentWait = m_wait;
             }
-            else if (Input.GetKeyDown(KeyCode.Alpha3))
+        }
+        else if(m_state == State.Pause)
+        {
+            m_currentWait -= Time.deltaTime;
+            if(m_currentWait <= 0.0f)
             {
-                ButtonPress(2);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha4))
-            {
-                ButtonPress(3);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha5))
-            {
-                ButtonPress(4);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha6))
-            {
-                ButtonPress(5);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha7))
-            {
-                ButtonPress(6);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha8))
-            {
-                ButtonPress(7);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha9))
-            {
-                ButtonPress(8);
-            }
-            else if (Input.GetKeyDown(KeyCode.Alpha0))
-            {
-                ButtonPress(9);
+                m_state = State.Simulating;
             }
         }
     }
@@ -247,10 +282,19 @@ public class Town : MonoBehaviour
         while (m_changeBuffer.Count != 0)
         {
             BufferHandler();
-            UpdateImprovements();
         }
 
+        m_state = State.Simulating;
         m_complete = TownComplete();
+    }
+
+    private void UpdateImprovement()
+    {
+        if (m_updateBuffer.Count != 0)
+        {
+            m_allImprovements[(int)m_updateBuffer[0]].Upgrade();
+            m_updateBuffer.RemoveAt(0);
+        }
     }
 
     private void UpdateImprovements()
