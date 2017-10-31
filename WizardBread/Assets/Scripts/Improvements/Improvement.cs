@@ -42,6 +42,7 @@ public class Improvement : MonoBehaviour
     public List<ProcessPackage> m_data = new List<ProcessPackage>();
     public List<StatChange> m_statChanges = new List<StatChange>();
     public List<bool> m_flags = new List<bool>();
+    public ImprovementData m_externalData;
 
     private string m_filePath;
     public bool m_save = false;
@@ -118,46 +119,60 @@ public class Improvement : MonoBehaviour
 
     private void SaveData()
     {
-        m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
+        //m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
 
-        if (File.Exists(m_filePath))
-        {
-            File.Delete(m_filePath);
-        }
+        //if (File.Exists(m_filePath))
+        //{
+        //    File.Delete(m_filePath);
+        //}
 
-        File.CreateText(m_filePath).Dispose();
+        //File.CreateText(m_filePath).Dispose();
 
-        StreamWriter writer = new StreamWriter(m_filePath, true);
-        string Json = JsonUtility.ToJson(new ImproveData(m_data));
-        writer.WriteLine(Json);
-        writer.Close();
-        AssetDatabase.ImportAsset(m_filePath);
+        //StreamWriter writer = new StreamWriter(m_filePath, true);
+        //string Json = JsonUtility.ToJson(new ImproveData(m_data));
+        //writer.WriteLine(Json);
+        //writer.Close();
+        //AssetDatabase.ImportAsset(m_filePath);
+        m_externalData.Data.AddRange(m_data);
     }
 
 #endif
 
     private void LoadData()
     {
-        m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
+        //m_filePath = "Assets/Data/Sim/Improvements/" + m_tag.ToString() + ".txt";
 
-        if (File.Exists(m_filePath))
+        //if (File.Exists(m_filePath))
+        //{
+        //    StreamReader reader = new StreamReader(m_filePath);
+        //    ImproveData data = JsonUtility.FromJson<ImproveData>(reader.ReadLine());
+        //    reader.Close();
+
+        //    m_data.Clear();
+        //    m_data = data.Data;
+        //    if (m_data.Count + 1 < m_maxLevel)
+        //    {
+        //        m_maxLevel = m_data.Count + 1;
+        //    }
+
+        //    m_flags.Clear();
+        //    foreach (ProcessPackage pack in m_data)
+        //    {
+        //        m_flags.Add(false);
+        //    }
+        //}
+
+        m_data.Clear();
+        m_data.AddRange(m_externalData.Data);
+        if (m_data.Count + 1 < m_maxLevel)
         {
-            StreamReader reader = new StreamReader(m_filePath);
-            ImproveData data = JsonUtility.FromJson<ImproveData>(reader.ReadLine());
-            reader.Close();
+            m_maxLevel = m_data.Count + 1;
+        }
 
-            m_data.Clear();
-            m_data = data.Data;
-            if (m_data.Count + 1 < m_maxLevel)
-            {
-                m_maxLevel = m_data.Count + 1;
-            }
-
-            m_flags.Clear();
-            foreach (ProcessPackage pack in m_data)
-            {
-                m_flags.Add(false);
-            }
+        m_flags.Clear();
+        foreach (ProcessPackage pack in m_data)
+        {
+            m_flags.Add(false);
         }
     }
 

@@ -13,10 +13,7 @@ public class Chosen : MonoBehaviour {
     private Vector3 endLocation;
     private GameObject m_improvementsParent;
     private GameObject newTownObject;
-    Vector3 arrival = new Vector3(0.0f, 2.0f);
-    private bool buttonActive = true;
-    
-
+    private bool buttonActive = true;  
 
     private void Start()
     {
