@@ -2,7 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+
 using UnityEditor;
+
+#endif
 
 public class NumberPermutation : MonoBehaviour
 {
@@ -15,13 +20,15 @@ public class NumberPermutation : MonoBehaviour
     public static int m_currentLine = 0;
     public static StreamReader m_reader = null;
 
-    void Update()
+    private void Update()
     {
         if (m_start)
         {
             m_start = false;
             GenerateAllPermutations(m_seed);
+#if UNITY_EDITOR
             SaveData();
+#endif
             m_result.Clear();
         }
     }
@@ -50,7 +57,7 @@ public class NumberPermutation : MonoBehaviour
             Debug.LogWarning("Seed is empty, no numbers to permutate");
         }
         return m_result;
-   }
+    }
 
     private static void GenerateRow(int _row)
     {
@@ -173,14 +180,13 @@ public class NumberPermutation : MonoBehaviour
                 m_reader.Close();
                 m_currentLine = 0;
             }
-
         }
         return data.Data;
     }
 }
 
 [Serializable]
-class PermData
+internal class PermData
 {
     public List<int> Data;
 

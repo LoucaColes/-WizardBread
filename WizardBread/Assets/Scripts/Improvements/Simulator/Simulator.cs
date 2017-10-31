@@ -2,7 +2,12 @@
 using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
+
+#if UNITY_EDITOR
+
 using UnityEditor;
+
+#endif
 
 public class Simulator : MonoBehaviour
 {
@@ -30,7 +35,7 @@ public class Simulator : MonoBehaviour
 
         public float CalculateScore()
         {
-            if(MaxLevel != 0)
+            if (MaxLevel != 0)
             {
                 return ((float)Level / (float)MaxLevel) * 100.0f;
             }
@@ -117,30 +122,32 @@ public class Simulator : MonoBehaviour
 
     private List<ImprovementSim> m_activeImprovements = new List<ImprovementSim>();
     private List<ChangePackage> m_changeBuffer = new List<ChangePackage>();
-    
+
     public bool m_save = false;
     public string m_name = "";
     private string m_filePath;
 
-    void OnDestroy()
+    private void OnDestroy()
     {
         m_results.Clear();
     }
 
-    void Update ()
+    private void Update()
     {
-		if(m_start)
+        if (m_start)
         {
             m_start = false;
             BeginSimulation();
         }
 
-        if(m_save)
+        if (m_save)
         {
             m_save = false;
+#if UNITY_EDITOR
             SaveData();
+#endif
         }
-	}
+    }
 
     private void BeginSimulation()
     {
@@ -161,13 +168,13 @@ public class Simulator : MonoBehaviour
                 AddImprovement(tag);
                 m_results[m_results.Count - 1].Order.Add((int)tag);
 
-                while(m_changeBuffer.Count != 0)
+                while (m_changeBuffer.Count != 0)
                 {
                     BufferHandler();
                 }
             }
 
-            foreach(ImprovementSim item in m_activeImprovements)
+            foreach (ImprovementSim item in m_activeImprovements)
             {
                 m_results[m_results.Count - 1].Results.Add(new ImproveResult(item.m_tag.ToString(), item.m_level, item.m_maxLevel));
             }
@@ -186,7 +193,7 @@ public class Simulator : MonoBehaviour
         int max = m_order.Count;
         m_totalPermutations = 1;
 
-        for(int iter = 0; iter < m_order.Count; iter++)
+        for (int iter = 0; iter < m_order.Count; iter++)
         {
             m_totalPermutations *= (max - iter);
         }
@@ -209,7 +216,7 @@ public class Simulator : MonoBehaviour
     private void Reorder(List<int> _newOrder)
     {
         m_order.Clear();
-        foreach(int item in _newOrder)
+        foreach (int item in _newOrder)
         {
             m_order.Add((Town.ImprovementTags)item);
         }
@@ -217,7 +224,7 @@ public class Simulator : MonoBehaviour
 
     private void CullResults()
     {
-        if(m_results.Count > 100)
+        if (m_results.Count > 100)
         {
             m_results.Sort((a, b) => a.Score.CompareTo(b.Score));
             m_results.RemoveRange(100, m_results.Count - 100);
@@ -246,7 +253,7 @@ public class Simulator : MonoBehaviour
             foreach (ImprovementSim improv in m_activeImprovements)
             {
                 ChangePackage temp = improv.Resolve(package);
-                if(temp != null)
+                if (temp != null)
                 {
                     AddPopulation(temp.Population);
                     AddEsteem(temp.Esteem);
@@ -257,7 +264,7 @@ public class Simulator : MonoBehaviour
 
         m_changeBuffer.Clear();
 
-        if(tempBuffer.Count != 0)
+        if (tempBuffer.Count != 0)
         {
             m_changeBuffer.AddRange(tempBuffer);
         }
@@ -345,7 +352,7 @@ public class Simulator : MonoBehaviour
                     writer.WriteLine("MaxLevel: " + result.MaxLevel);
                     writer.WriteLine("");
                 }
-                
+
                 writer.WriteLine("================================");
                 writer.WriteLine("");
                 dataIter++;
@@ -363,7 +370,7 @@ public class Simulator : MonoBehaviour
 }
 
 [Serializable]
-class OrderData
+internal class OrderData
 {
     public List<int> Data = new List<int>();
 
