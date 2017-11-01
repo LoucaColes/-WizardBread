@@ -1,1 +1,0 @@
-{"MaxLevel":4,"Data":[{"Tag":1,"Level":0,"Process":0,"OtherLevel":0,"OtherProcess":0},{"Tag":2,"Level":0,"Process":0,"OtherLevel":0,"OtherProcess":0},{"Tag":3,"Level":0,"Process":0,"OtherLevel":0,"OtherProcess":0},{"Tag":4,"Level":0,"Process":0,"OtherLevel":0,"OtherProcess":0}]}
