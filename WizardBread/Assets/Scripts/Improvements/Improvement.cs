@@ -133,6 +133,7 @@ public class Improvement : MonoBehaviour
         //writer.WriteLine(Json);
         //writer.Close();
         //AssetDatabase.ImportAsset(m_filePath);
+        m_externalData.Data.Clear();
         m_externalData.Data.AddRange(m_data);
     }
 
