@@ -35,12 +35,12 @@ public class GameOverCanvas : MonoBehaviour
             {
                 if (Town.m_instance.m_townSelfEsteem >= m_targetScore)
                 {
-                    AudioManager.m_instance.PlaySFX("Win");
+                    AudioManager.AudioManager.m_instance.PlaySFX("Win", Vector3.zero);
                     m_messageText.text = "Well Done! You Reached The Target Score";
                 }
                 else
                 {
-                    AudioManager.m_instance.PlaySFX("GameOver");
+                    AudioManager.AudioManager.m_instance.PlaySFX("GameOver", Vector3.zero);
                     m_messageText.text = "Unlucky! Try Again!";
                 }
                 m_played = true;

@@ -94,7 +94,7 @@ public class Improvement : MonoBehaviour
         if (!m_buildPlayed)
         {
             m_buildPlayed = true;
-            AudioManager.m_instance.PlaySFX("Build");
+            AudioManager.AudioManager.m_instance.PlaySFX("Build", Vector3.zero);
         }
     }
 
@@ -214,7 +214,7 @@ public class Improvement : MonoBehaviour
                 m_renderer.sprite = m_visualLevels[m_level];
             }
 
-            AudioManager.m_instance.PlaySFX("Ding");
+            AudioManager.AudioManager.m_instance.PlaySFX("Ding", Vector3.zero);
 
             m_level++;
         }
