@@ -31,7 +31,8 @@ public class Chosen : MonoBehaviour {
             if (buttonActive == true)
             {
                 buttonActive = false;
-                GetComponent<SpriteRenderer>().sprite = null;
+
+                GetComponent<LevelUISwap>().enabled = true;
 
                 GameObject newTownObject = Instantiate(townObject) as GameObject;
                 newTownObject.transform.parent = m_improvementsParent.transform;

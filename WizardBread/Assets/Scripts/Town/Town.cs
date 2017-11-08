@@ -351,6 +351,8 @@ public class Town : MonoBehaviour
 
         m_activeImprovements.Add(m_allImprovements[(int)_tag]);
         m_activeImprovements[m_activeImprovements.Count - 1].Initialise();
+
+        OrderUI.m_instance.AddRender(_tag);
     }
 
     private void BufferHandler()

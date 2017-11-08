@@ -219,6 +219,15 @@ public class Improvement : MonoBehaviour
             m_level++;
         }
     }
+
+    public bool CheckComplete()
+    {
+        if (m_level == m_maxLevel)
+        {
+            return true;
+        }
+        return false;
+   }
 }
 
 [Serializable]
