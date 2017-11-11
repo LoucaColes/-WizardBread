@@ -52,9 +52,13 @@ public class Improvement : MonoBehaviour
 
     private bool m_buildPlayed = false;
 
+    private Animator m_smokeAnimator;
+
     private void Start()
     {
         LoadData();
+
+        m_smokeAnimator = GetComponentInChildren<Animator>();
 
         int count = m_statChanges.Count - 1;
         while (m_statChanges.Count < m_maxLevel)
@@ -211,6 +215,7 @@ public class Improvement : MonoBehaviour
         {
             if (m_visualLevels[m_level])
             {
+                m_smokeAnimator.SetBool("Play", true);
                 m_renderer.sprite = m_visualLevels[m_level];
             }
 

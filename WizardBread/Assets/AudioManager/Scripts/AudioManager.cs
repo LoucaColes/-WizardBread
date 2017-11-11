@@ -161,7 +161,7 @@ namespace AudioManager
         private void PlayNextMusicTrack()
         {
             m_currentMusic.m_audioSource.Play();
-            if (!m_currentMusic.m_fade && m_prevMusic.m_audioSource != null)
+            if (!m_currentMusic.m_fade && m_prevMusic != null)
             {
                 m_prevMusic.m_audioSource.Stop();
             }
