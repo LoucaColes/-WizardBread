@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -9,7 +10,9 @@ public class GameOverCanvas : MonoBehaviour
     public Canvas m_gameOverCanvas;
     public Text m_esteemText;
     public Text m_messageText;
-    public List<Highscore> m_highscores = new List<Highscore>();
+    public List<Highscore> m_highscoreUI = new List<Highscore>();
+    private HighscoreData m_internalData;
+    public HighscoreData m_externalData;
     public List<Sprite> m_sprites = new List<Sprite>();
 
     public float m_time;
@@ -26,6 +29,10 @@ public class GameOverCanvas : MonoBehaviour
         m_esteemText.text = "";
         m_messageText.text = "";
         m_timer = 0;
+
+        m_internalData = ScriptableObject.CreateInstance<HighscoreData>();
+        m_internalData.Initialise();
+        LoadData();
     }
 
     // Update is called once per frame
@@ -35,6 +42,9 @@ public class GameOverCanvas : MonoBehaviour
         {
             if (!m_played)
             {
+                m_gameOverCanvas.enabled = true;
+                m_esteemText.text = "Final Esteem: " + Town.m_instance.m_townSelfEsteem; 
+
                 if (Town.m_instance.m_townSelfEsteem >= m_targetScore)
                 {
                     AudioManager.AudioManager.m_instance.PlaySFX("Win", Vector3.zero);
@@ -46,41 +56,49 @@ public class GameOverCanvas : MonoBehaviour
                     m_messageText.text = "Unlucky! Try Again!";
                 }
 
-                for(int iter = 0; iter <= m_highscores.Count - 1; iter++)
-                {
-                    m_highscores[iter].Position.text = Highscore.GetPosition(iter);
-                    m_highscores[iter].Score.text = "" + 100 + iter;
+                LoadData();
+                m_internalData.AddHighscore(Town.m_instance.m_townSelfEsteem, Town.m_instance.m_order);
+                SaveData();
 
-                    for (int iconIter = 0; iconIter <= m_sprites.Count - 1; iconIter++)
+                for (int iter = 0; iter <= m_highscoreUI.Count - 1; iter++)
+                {
+                    if (iter < m_internalData.m_data.Count)
                     {
-                        m_highscores[iter].Icons[iconIter].sprite = m_sprites[iconIter];
+                        m_highscoreUI[iter].SetPosition(m_internalData.m_data[iter].Position);
+                        m_highscoreUI[iter].SetScore(m_internalData.m_data[iter].Score);
+
+                        for (int iconIter = 0; iconIter <= m_sprites.Count - 1; iconIter++)
+                        {
+                            m_highscoreUI[iter].SetIcons(m_internalData.m_data[iter].Order);
+                        }
                     }
                 }
 
                 m_played = true;
             }
-            m_gameOverCanvas.enabled = true;
-            m_esteemText.text = "Final Esteem: " + Town.m_instance.m_townSelfEsteem;
-            m_timer += Time.deltaTime;
-            if (m_timer >= m_time)
+
+            if (Input.GetMouseButtonDown(0))
             {
                 SceneManager.LoadScene(0);
             }
         }
         else
         {
-            for (int iter = 0; iter <= m_highscores.Count - 1; iter++)
-            {
-                m_highscores[iter].Position.text = "---";
-                m_highscores[iter].Score.text = "---";
-
-                for (int iconIter = 0; iconIter <= m_sprites.Count - 1; iconIter++)
-                {
-                    m_highscores[iter].Icons[iconIter].sprite = null;
-                }
-            }
-
             m_gameOverCanvas.enabled = false;
         }
+    }
+
+    private void SaveData()
+    {
+        m_externalData.m_data.Clear();
+        m_externalData.m_maxHighscores = m_internalData.m_maxHighscores;
+        m_externalData.m_data.AddRange(m_internalData.m_data);
+    }
+
+    private void LoadData()
+    {
+        m_internalData.m_data.Clear();
+        m_internalData.m_maxHighscores = m_externalData.m_maxHighscores;
+        m_internalData.m_data.AddRange(m_externalData.m_data);
     }
 }

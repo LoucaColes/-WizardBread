@@ -4,9 +4,24 @@ using UnityEngine.UI;
 
 public class Highscore : MonoBehaviour
 {
-    public Text Position;
-    public Text Score;
-    public List<Image> Icons = new List<Image>();
+    public int Position;
+    public Text PositionText;
+    public int Score;
+    public Text ScoreText;
+    public List<Town.ImprovementTags> Icons = new List<Town.ImprovementTags>();
+    public List<Image> IconsImages = new List<Image>();
+
+    public void SetScore(int _score)
+    {
+        Score = _score;
+        ScoreText.text = _score.ToString();
+    }
+
+    public void SetPosition(int _position)
+    {
+        Position = _position;
+        PositionText.text = GetPosition(_position);
+    }
 
     public static string GetPosition(int _pos)
     {
@@ -35,5 +50,22 @@ public class Highscore : MonoBehaviour
                 }
         }
         return position;
+    }
+
+    public void SetIcons(List<Town.ImprovementTags> _icons)
+    {
+        Icons = _icons;
+
+        for(int iter = 0; iter < IconsImages.Count; iter++)
+        {
+            IconsImages[iter].sprite = null;
+            if (Icons != null)
+            {
+                if (iter < Icons.Count)
+                {
+                    IconsImages[iter].sprite = ImprovementHardData.Instance.Icons[(int)Icons[iter]];
+                }
+            }
+        }
     }
 }
